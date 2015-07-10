@@ -1,0 +1,84 @@
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+
+public class Bullet1 : MonoBehaviour {
+
+//	public GameObject bulletSprite;
+	public float shotDelay = 100;
+	public float bulletSpeed = 500;
+	public int bulletMax = 1;
+
+	private GameObject selectedBullet;
+
+	private GameObject gun;
+
+
+	public Transform gunPosition;
+
+	public GameObject bulletPoolPosition;
+
+//	public GameObject[] bulletPool;
+	List<GameObject> bulletPool = new List<GameObject>();
+
+
+	// Use this for initialization
+	void Start () {
+		GameObject instance = Instantiate (Resources.Load ("Launchers/Gun")) as GameObject;
+//		gun = instance;
+//		GameObject instance2 = Instantiate (bulletSprite) as GameObject;
+
+		for (int i = 0; i < bulletMax; i++) {
+			GameObject bullet = Instantiate (Resources.Load ("Projectiles/Bullet")) as GameObject;
+//			bulletPool.Push(bullet);
+			bulletPool.Add (bullet);
+			Debug.Log (bulletPool.Count);
+		}
+	}
+	
+	// Update is called once per frame
+	void Update () {
+		if (Input.GetMouseButtonDown (0)) {
+			Debug.Log ("Pressed left click.");
+			gun = GameObject.FindGameObjectWithTag("Gun");
+			gunPosition = gun.transform;
+			ShootBullet(gunPosition);
+		}
+
+
+	}
+
+	void ShootBullet(Transform transform){
+//		if(Time.realtimeSinceStartup
+		selectedBullet = bulletPool[0];
+		selectedBullet.SetActive (true);
+		Rigidbody2D selectedBulletV = selectedBullet.GetComponent<Rigidbody2D> ();
+		selectedBulletV.velocity = new Vector3 (0, 10, 0);
+		BulletRevive ();
+
+
+	}
+
+	void BulletRevive(){
+		StartCoroutine(BulletRevival(gunPosition));
+		Debug.Log ("Done");
+	}
+
+	IEnumerator BulletRevival(Transform backtogun){
+		yield return new WaitForSeconds (2);
+		selectedBullet.SetActive (false);
+		bulletPool.Remove (bulletPool [0]);
+		Debug.Log ("Bullet removed");
+//		GameObject oldBullet = selectedBullet;
+		Debug.Log ("Old bullet selected");
+		bulletPool.Add (selectedBullet);
+		selectedBullet.transform.position = gun.transform.position;
+		Debug.Log ("Old Bullet returned to bullet pool");
+//		bulletPool.Add (selectedBullet);
+//		Debug.Log ("Bullet added");
+//		selectedBullet = bulletPool [0];
+//		bulletPool.Add (selectedBullet);
+//		Debug.Log ("Next Bullet Ready");
+
+	}
+}
