@@ -1,0 +1,33 @@
+using UnityEngine;
+using System.Collections;
+using UnityEditor;
+
+
+[CustomEditor(typeof(ObjectBuilderScript))]
+public class ObjectBuilderEditor : Editor {
+
+	public GameObject poop;
+
+	public override void OnInspectorGUI(){
+		DrawDefaultInspector ();
+//		poop = Resources.Load ("poop");
+
+		ObjectBuilderScript myScript = (ObjectBuilderScript)target;
+		if (GUILayout.Button ("BuildObject")) {
+			myScript.BuildObject();
+		}
+		if (GUILayout.Button ("New Sheet")) {
+
+			myScript.SheetNew();
+
+		}
+		if (GUILayout.Button ("New Note")) {
+			
+			myScript.NewNote();
+			
+		}
+
+	}
+
+
+}
