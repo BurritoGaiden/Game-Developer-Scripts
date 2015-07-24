@@ -1,0 +1,1311 @@
+using UnityEngine;
+using System.Collections;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
+
+public class MainMenuFunctionality1 : MonoBehaviour {
+
+	public int thisChoice = 0;
+	public int subMenu = 0;
+//	public enum baseSubMenus {StartGame = 0, Equipment = 1, Tutorial = 2, Scores = 3, Options = 4, Quit = 5};
+//	public enum menuCanvas {MainMenu, EquipmentMenu, OptionsMenu};
+//	public int intelligence = 5;
+	public int menuCount = 0;
+	public GameObject Arrow;
+	public GameObject mainMenuCanvas;
+	public GameObject equipmentMenuCanvas;
+	public GameObject optionMenuCanvas;
+	public GameObject highscoreMenuCanvas;
+	public GameObject currentMainMenuSelection;
+
+	public bool mainmenuinput = false;
+	public bool equipmenuinput = false;
+	public bool optionmenuinput = false;
+	public bool highscoremenuinput = false;
+
+	public int mainmenuint = 0;
+	public int equipmenuint = 0;
+	public int optionmenuint = 0;
+	public int highscoreint = 0;
+
+	public int currentint = 0;
+	public int currentintmax;
+	public int currentintmin;
+
+	public Vector3 anchorPosition;
+
+	public GameObject mainmenuanchorPosition;
+	public GameObject equipmentanchorPosition;
+	public GameObject optionanchorPosition;
+	public GameObject highscoreanchorPosition;
+
+	public GameObject Table;
+
+	void Awake(){
+		mainMenuCanvas.SetActive (true);
+		mainmenuinput = true;
+		currentint = 0;
+		Arrow = Instantiate (Resources.Load ("Arrows/ArrowIdle")) as GameObject;
+		Arrow.transform.position = mainmenuanchorPosition.transform.position;
+	}
+
+	void Update(){
+	
+		if (Input.GetKeyDown (KeyCode.DownArrow) && currentint < currentintmax) {
+			if(equipmenuinput == true){
+				currentint ++;
+				Vector3 position = Arrow.transform.position;
+				position.y -= 1.5f;
+				Arrow.transform.position = position;
+			}
+			else{
+			currentint ++;
+			Vector3 position = Arrow.transform.position;
+			position.y--;
+			Arrow.transform.position = position;
+			}
+		}
+
+		if (Input.GetKeyDown (KeyCode.UpArrow) && currentint > currentintmin) {
+			if(equipmenuinput == true){
+				currentint --;
+				Vector3 position = Arrow.transform.position;
+				position.y += 1.5f;
+				Arrow.transform.position = position;
+			}
+			else{
+			currentint --;
+			Vector3 position = Arrow.transform.position;
+			position.y++;
+			Arrow.transform.position = position;
+			}
+		}
+		
+		if (mainmenuinput == true) {
+			highscoreMenuCanvas.SetActive(false);
+			optionMenuCanvas.SetActive(false);
+			equipmentMenuCanvas.SetActive(false);
+			mainMenuCanvas.SetActive(true);
+
+
+
+			highscoremenuinput = false;
+			optionmenuinput = false;
+			equipmenuinput = false;
+			mainmenuinput = true;
+
+			mainmenuint = currentint;
+
+			currentintmax = 5;
+			currentintmin = 0;
+
+			if (Input.GetKeyDown(KeyCode.Return)) {
+				if(mainmenuint == 0){
+					Debug.Log("Starting Game");
+					Application.LoadLevel("LoadingScreenMMtoGameplay");
+				}
+				else if(mainmenuint == 1){
+					Debug.Log("Going to Equipment Menu");
+					equipmenuinput = true;
+					mainmenuinput = false;
+					currentint = 0;
+					Arrow.transform.position = equipmentanchorPosition.transform.position;
+				}
+				else if(mainmenuint == 2){
+					Debug.Log("Starting Tutorial");
+					Application.LoadLevel("Tutorial Scene Revamp");
+				}
+				else if(mainmenuint == 3){
+					Debug.Log("Going to Highscore Menu");
+					highscoremenuinput = true;
+					mainmenuinput = false;
+					currentint = 0;
+					Arrow.transform.position = highscoreanchorPosition.transform.position;
+				}
+				else if(mainmenuint == 4){
+					Debug.Log("Going to Options Menu");
+					optionmenuinput = true;
+					mainmenuinput = false;
+					currentint = 0;
+					Arrow.transform.position = optionanchorPosition.transform.position;
+				}
+				else if(mainmenuint == 5){
+					Debug.Log("Quitting Game");
+					Application.Quit();
+				}
+			}
+		}
+		else if (optionmenuinput == true) {
+			optionMenuCanvas.SetActive(true);
+			highscoreMenuCanvas.SetActive(false);
+			equipmentMenuCanvas.SetActive(false);
+			mainMenuCanvas.SetActive(false);
+
+		
+		
+
+			highscoremenuinput = false;
+			optionmenuinput = true;
+			equipmenuinput = false;
+			mainmenuinput = false;
+
+			optionmenuint = currentint;
+
+			currentintmax = 3;
+			currentintmin = 0;
+
+			if (Input.GetKeyDown(KeyCode.Return)) {
+				if(optionmenuint == 0){
+					Debug.Log("Changing Music Volume");
+				}
+				else if(optionmenuint == 1){
+					Debug.Log("Changing SFX Volume");
+				}
+				else if(optionmenuint == 2){
+					Debug.Log("Changing Controller Type");
+				}
+				else if(optionmenuint == 3){
+					Debug.Log("Returning to Main Menu");
+					mainmenuinput = true;
+					optionmenuinput = false;
+					currentint = 0;
+					Arrow.transform.position = mainmenuanchorPosition.transform.position;
+				}
+			}
+		}
+		else if (highscoremenuinput == true) {
+
+			optionMenuCanvas.SetActive(false);
+			equipmentMenuCanvas.SetActive(false);
+			mainMenuCanvas.SetActive(false);
+			highscoreMenuCanvas.SetActive(true);
+
+		
+
+			highscoremenuinput = true;
+			optionmenuinput = false;
+			mainmenuinput = false;
+			equipmenuinput = false;
+
+			currentintmax = 0;
+			currentintmin = 0;
+
+			highscoreint = currentint;
+
+			if (Input.GetKeyDown(KeyCode.Return)) {
+				if(highscoreint == 0){
+					Debug.Log("Returning to Main Menu");
+					highscoremenuinput = false;
+					mainmenuinput = true;
+					currentint = 0;
+					Arrow.transform.position = mainmenuanchorPosition.transform.position;
+
+				}
+			}
+		}
+		else if (equipmenuinput == true) {
+			optionMenuCanvas.SetActive(false);
+			highscoreMenuCanvas.SetActive(false);
+			equipmentMenuCanvas.SetActive(true);
+			mainMenuCanvas.SetActive(false);
+
+		
+
+			highscoremenuinput = false;
+			optionmenuinput = false;
+			equipmenuinput = true;
+			mainmenuinput = false;
+			
+			equipmenuint = currentint;
+
+			currentintmax = 5;
+			currentintmin = 0;
+
+			if (Input.GetKeyDown(KeyCode.Return)) {
+				if(equipmenuint == 0){
+					Debug.Log("Starting Game");
+				}
+				else if(equipmenuint == 1){
+					Debug.Log("Going to Equipment Menu");
+				}
+				else if(equipmenuint == 2){
+					Debug.Log("Starting Tutorial");
+				}
+				else if(equipmenuint == 3){
+					Debug.Log("Going to Highscore Menu");
+				}
+				else if(equipmenuint == 4){
+					Debug.Log("Going to Options Menu");
+				}
+				else if(equipmenuint == 5){
+					Debug.Log("Going to Main Menu");
+					equipmenuinput = false;
+					mainmenuinput = true;
+					currentint = 0;
+					Arrow.transform.position = mainmenuanchorPosition.transform.position;
+				}
+			}
+		}
+	}
+
+
+//
+//	public int currentSelection = 0;
+//	public int currentEquipmentSubMenuSelection = 0;
+//	public bool withinEquipmentSubMenu = false;
+//	public enum EquipmentSubMenus {returnToMM, pistol, seekers, body, music};
+//	public int currentOptionsSelection = 0;
+//	public int currentlyDeployedOS = 0;
+//	public int storedMusicVol = 10;
+//	public int storedSfxVol = 10;
+//	public int storedController = 0;
+//	public int currentMenu = 0;
+//	public GameObject ArrowPosition0;
+//	public GameObject ArrowPosition1;
+//	public GameObject ArrowPosition2;
+//	public GameObject ArrowPosition3;
+//	public GameObject ArrowPosition4;
+//	public GameObject ArrowEquipSave;
+//	private SpriteRenderer ArrowEquipSaveSprite;
+//	public GameObject GunModListener;
+//	private SelectedSubMenuListener GunSubMenuListenerComp;
+//	public GameObject SeekerModListener;
+//	private SelectedSubMenuListener SeekerSubMenuListenerComp;
+//	public GameObject BodyModListener;
+//	private SelectedSubMenuListener BodySubMenuListenerComp;
+//	public GameObject MusicSelectionListener;
+//	private SelectedSubMenuListener MusicSubMenuListenerComp;
+//
+//	public GameObject OptionsArrowLocMusicVolLoc;
+//	public GameObject OptionsArrowLocSfxVolLoc;
+//	public GameObject OptionsControllerSelect;
+//	public GameObject OptionsControllerSelectString;
+//	public GameObject OptionsControllerKnMLoc;
+//	public GameObject OptionsControllerJoypadLoc;
+//	public GameObject SaveOptionsReturnMMLoc;
+//	public GameObject currentSelectionArrowMusicVol;
+//	public GameObject currentSelectionArrowSfxVol;
+//	public GameObject MainMenuCamPos;
+//	public GameObject ControlsMenuCamPos;
+//	public GameObject OptionsMenuCamPos;
+//	public GameObject EquipmentMenuCamPos;
+//	public GameObject beginMusicPos;
+//	public GameObject endMusicPos;
+//	public float totalMusicPosDist;
+//	public GameObject beginSfxPos;
+//	public GameObject endSfxPos;
+//	public float totalSfxPosDist;
+//	public bool alteringOptionsMode = false;
+//	//Launch Game is 0
+//	//Tutorial is 1
+//	//Quit is 2
+//	public enum ArrowSelection {launchGame, controls, quit};
+//	public enum CurrentMenu {mainMenu, equipment, controls, options};
+//	public enum controllerType {mouseAndKeyboard, joypadController};
+//	public enum OSType {windows, mac, linux, xone, ps4, psvita, wiiu};
+
+//	//Analog stick menu movement
+//	public Vector2 leftStickInput;
+//	public bool leftstick_y_axis_reset = true;
+//	public float joystick_deadzone = 0.35f;
+//
+//	public bool MenuAnalogLeft = false;
+//	public bool MenuAnalogRight = false;
+//	public bool MenuAnalogUp = false;
+//	public bool MenuAnalogDown = false;
+//
+//	public int lastAnalogMovement = 0;
+//	public enum AnalogMovement {left, right, up, down};
+//	public bool analogFrameCounting = false;
+//	public int currentAnalogFrameCounter = 0;
+//	public int analogFrameTimerLimit = 5; 
+//
+//	// Sound effects
+//	public GameObject sfxMovingThroughMainMenu;
+//	private AudioSourceTracker sfxMovingThroughMainMenuAudioSource;
+//	public GameObject sfxSelectingSomethingMainMenu;
+//	private AudioSourceTracker sfxSelectingSomethingMainMenuAudioSource;
+//
+//	public GameObject sfxMovingThroughEquipMenu;
+//	private AudioSourceTracker sfxMovingThroughEquipMenuAudioSource;
+//	public GameObject sfxSelectedEquipEquipMenu;
+//	private AudioSourceTracker sfxSelectedEquipEquipMenuAudioSource;
+//	public GameObject sfxCantSelectEquipEquipMenu;
+//	private AudioSourceTracker sfxCantSelectEquipEquipMenuAudioSource;
+//
+//	// Use this for initialization
+//	void Awake () {
+//	//	Debug.Log ("Data path is " + Application.persistentDataPath);
+//	//	if (File.Exists (Application.persistentDataPath + "/" + SaveLoad.currentFilePath)) {
+//		totalMusicPosDist = endMusicPos.transform.position.x- beginMusicPos.transform.position.x;
+//		totalSfxPosDist = endSfxPos.transform.position.x- beginSfxPos.transform.position.x;
+//
+//		if (File.Exists (SaveLoad.currentFilePath)) {
+//			Debug.Log ("Save data exists, loading now");
+//			SaveLoad.Load();
+//		} else {
+//			//Display This game autosaves notification, create save data now
+//			Debug.Log ("Save data doesn't exist, creating now");
+//			SaveLoad.Save ();
+//		
+//		}
+//
+//		storedMusicVol = SaveData.musicVolume;
+//		storedSfxVol = SaveData.sfxVolume;
+//		storedController = SaveData.controllerType;
+//		currentlyDeployedOS = SaveData.deployedOS;
+//
+//
+//		sfxMovingThroughMainMenuAudioSource = sfxMovingThroughMainMenu.GetComponent<AudioSourceTracker>();
+//		sfxSelectingSomethingMainMenuAudioSource = sfxSelectingSomethingMainMenu.GetComponent<AudioSourceTracker>();
+//		
+//		sfxMovingThroughEquipMenuAudioSource = sfxMovingThroughEquipMenu.GetComponent<AudioSourceTracker>();
+//		sfxSelectedEquipEquipMenuAudioSource =  sfxSelectedEquipEquipMenu.GetComponent<AudioSourceTracker>();
+//		sfxCantSelectEquipEquipMenuAudioSource = sfxCantSelectEquipEquipMenu.GetComponent<AudioSourceTracker>();
+//
+//
+//		currentSelectionArrowMusicVol.transform.position = new Vector3(beginMusicPos.transform.position.x + (storedMusicVol/10f)*totalMusicPosDist, 
+//		                                                            OptionsArrowLocMusicVolLoc.transform.position.y, OptionsArrowLocMusicVolLoc.transform.position.z);
+//		currentSelectionArrowSfxVol.transform.position = new Vector3(beginSfxPos.transform.position.x + (storedSfxVol/10f)*totalSfxPosDist, 
+//		                                                          OptionsArrowLocSfxVolLoc.transform.position.y, OptionsArrowLocSfxVolLoc.transform.position.z);
+//
+//		ArrowEquipSaveSprite = ArrowEquipSave.GetComponent<SpriteRenderer> ();
+//		GunSubMenuListenerComp = GunModListener.GetComponent<SelectedSubMenuListener> ();
+//		SeekerSubMenuListenerComp = SeekerModListener.GetComponent<SelectedSubMenuListener> ();
+//		BodySubMenuListenerComp = BodyModListener.GetComponent<SelectedSubMenuListener> ();
+//		MusicSubMenuListenerComp = MusicSelectionListener.GetComponent<SelectedSubMenuListener> ();
+//	}
+//	
+//	// Update is called once per frame
+//	void Update () {
+//		//
+//		//Set alpha of currently-selected controller icon
+//
+//		AnalogInputForMenus();
+//
+//		switch (currentlyDeployedOS) {
+//		case ((int)OSType.windows):
+//		case ((int)OSType.mac):
+//		case ((int)OSType.linux):
+//			if (storedController == 0) {
+//				OptionsControllerKnMLoc.transform.localScale = new Vector2(1f,1f);
+//				OptionsControllerKnMLoc.GetComponent<SpriteRenderer>().renderer.material.color = new Color (1,1,1,1);
+//				OptionsControllerJoypadLoc.transform.localScale = new Vector2 (1f,1f);
+//				OptionsControllerJoypadLoc.GetComponent<SpriteRenderer>().renderer.material.color = new Color (1,1,1,0.3f);
+//			} else if (storedController == 1) {
+//				OptionsControllerKnMLoc.transform.localScale = new Vector2(1f,1f);
+//				OptionsControllerKnMLoc.GetComponent<SpriteRenderer>().renderer.material.color = new Color (1,1,1,0.3f);
+//				OptionsControllerJoypadLoc.transform.localScale = new Vector2 (1f,1f);
+//				OptionsControllerJoypadLoc.GetComponent<SpriteRenderer>().renderer.material.color = new Color (1,1,1,1);
+//			}
+//			break;
+//		case ((int)OSType.xone):
+//		case ((int)OSType.ps4):
+//		case ((int)OSType.psvita):
+//		case ((int)OSType.wiiu):
+//			OptionsControllerSelectString.GetComponent<SpriteRenderer>().renderer.material.color = new Color(1,1,1,0);
+//			OptionsControllerKnMLoc.GetComponent<SpriteRenderer>().renderer.material.color = new Color (1,1,1,0);
+//			OptionsControllerJoypadLoc.GetComponent<SpriteRenderer>().renderer.material.color = new Color (1,1,1,0);
+//			break;
+//		default:
+//			break;
+//		}
+//
+//
+//		/*
+//		if (Input.GetKeyDown("i")) {
+//		//	SaveData data = new SaveData();
+//			Debug.Log ("high score is " + SaveData.topScore);
+//		} */
+//
+//		if (currentMenu == (int)CurrentMenu.mainMenu) {
+//			currentOptionsSelection = 0;
+//
+//			////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//			switch (currentlyDeployedOS) {
+//			case ((int)OSType.windows):
+//			case ((int)OSType.mac):
+//			case ((int)OSType.linux):
+//
+//			//	if (SaveData.controllerType == (int)controllerType.mouseAndKeyboard) {
+//					if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) {
+//						if (currentSelection >= 1) {
+//							currentSelection--;
+//							sfxMovingThroughMainMenuAudioSource.PlayOneRandomly();
+//						}
+//					} else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) {
+//						if (currentSelection <= 3) {
+//							currentSelection++;
+//							sfxMovingThroughMainMenuAudioSource.PlayOneRandomly();
+//						}
+//					}
+//					
+//					if (Input.GetKeyUp(KeyCode.Return)) {
+//						Debug.Log ("pressed");
+//						sfxSelectingSomethingMainMenuAudioSource.PlayOneRandomly();
+//						switch (currentSelection) {
+//						case (0):
+//							//	Application.LoadLevel("Testing Rebuild");
+//							Application.LoadLevel("LoadingScreenMMtoGameplay");
+//							break;
+//						case (1):
+//							theCamera.transform.position = EquipmentMenuCamPos.transform.position;
+//							currentMenu = (int)CurrentMenu.equipment;
+//							break;
+//						case (2):
+//								Application.LoadLevel("Tutorial Scene Revamp");
+//							//	theCamera.transform.position = ControlsMenuCamPos.transform.position;
+//							//	currentMenu = (int)CurrentMenu.controls;
+//							// Go to How to Play
+//							break;
+//						case (3):
+//							theCamera.transform.position = OptionsMenuCamPos.transform.position;
+//							currentMenu = (int)CurrentMenu.options;
+//							break;
+//						case (4):
+//							Application.Quit();
+//							break;
+//						default:
+//							break;
+//						}
+//					}
+//			//	} else if (SaveData.controllerType == (int)controllerType.joypadController) {
+//					if (MenuAnalogUp) {
+//						if (currentSelection >= 1) {
+//							currentSelection--;
+//							sfxMovingThroughMainMenuAudioSource.PlayOneRandomly();
+//						}
+//					} else if (MenuAnalogDown) {
+//						if (currentSelection <= 3) {
+//							currentSelection++;
+//							sfxMovingThroughMainMenuAudioSource.PlayOneRandomly();
+//						}
+//					}
+//					
+//					if (Input.GetButtonDown ("360_AButton")) {
+//						Debug.Log ("pressed");
+//						sfxSelectingSomethingMainMenuAudioSource.PlayOneRandomly();
+//						switch (currentSelection) {
+//						case (0):
+//							//	Application.LoadLevel("Testing Rebuild");
+//							Application.LoadLevel("LoadingScreenMMtoGameplay");
+//							break;
+//						case (1):
+//							theCamera.transform.position = EquipmentMenuCamPos.transform.position;
+//							currentMenu = (int)CurrentMenu.equipment;
+//							break;
+//						case (2):
+//							Application.LoadLevel("Tutorial Scene Revamp");
+//							//	theCamera.transform.position = ControlsMenuCamPos.transform.position;
+//							//	currentMenu = (int)CurrentMenu.controls;
+//							// Go to How to Play
+//							break;
+//						case (3):
+//							theCamera.transform.position = OptionsMenuCamPos.transform.position;
+//							currentMenu = (int)CurrentMenu.options;
+//							break;
+//						case (4):
+//							Application.Quit();
+//							break;
+//						default:
+//							break;
+//						}
+//					}
+//			//	} 
+//				break;
+//			case ((int)OSType.xone):
+//				break;
+//			case ((int)OSType.ps4):
+//				break;
+//			case ((int)OSType.psvita):
+//				if (Input.GetButtonDown ("Vita_DpadUp") || MenuAnalogUp) {
+//					if (currentSelection >= 1) {
+//						currentSelection--;
+//						sfxMovingThroughMainMenuAudioSource.PlayOneRandomly();
+//					}
+//				} else if (Input.GetButtonDown ("Vita_DpadDown") || MenuAnalogDown) {
+//					if (currentSelection <= 3) {
+//						currentSelection++;
+//						sfxMovingThroughMainMenuAudioSource.PlayOneRandomly();
+//					}
+//				}
+//				
+//				if (Input.GetButtonUp("Vita_XButton")) {
+//					Debug.Log ("pressed boogers");
+//					sfxSelectingSomethingMainMenuAudioSource.PlayOneRandomly();
+//					switch (currentSelection) {
+//					case (0):
+//						//	Application.LoadLevel("Testing Rebuild");
+//						Application.LoadLevel("LoadingScreenMMtoGameplay");
+//						break;
+//					case (1):
+//						theCamera.transform.position = EquipmentMenuCamPos.transform.position;
+//						currentMenu = (int)CurrentMenu.equipment;
+//						break;
+//					case (2):
+//						Application.LoadLevel("Tutorial Scene Revamp");
+//						//	theCamera.transform.position = ControlsMenuCamPos.transform.position;
+//						//	currentMenu = (int)CurrentMenu.controls;
+//						// Go to How to Play
+//						break;
+//					case (3):
+//						theCamera.transform.position = OptionsMenuCamPos.transform.position;
+//						currentMenu = (int)CurrentMenu.options;
+//						break;
+//					case (4):
+//						Application.Quit();
+//						break;
+//					default:
+//						break;
+//					}
+//				}
+//				break;
+//			case ((int)OSType.wiiu):
+//				break;
+//			default:
+//				break;
+//			}
+//
+//
+//
+//			////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//			//Arrow movement
+//			switch (currentSelection) {
+//			case (0):
+//				transform.position = ArrowPosition0.transform.position;
+//				break;
+//			case (1):
+//				transform.position = ArrowPosition1.transform.position;
+//				break;
+//			case (2):
+//				transform.position = ArrowPosition2.transform.position;
+//				break;
+//			case (3):
+//				transform.position = ArrowPosition3.transform.position;
+//				break;
+//			case (4):
+//				transform.position = ArrowPosition4.transform.position;
+//				break;
+//			default:
+//				break;
+//
+//			}
+//		} else if (currentMenu == (int)CurrentMenu.equipment) {
+//			//Moving within Equipment screen
+//			if (Input.GetKeyDown(KeyCode.Escape) || Input.GetButtonDown ("Vita_OButton") || Input.GetButtonDown("360_BButton")) {
+//				if (!withinEquipmentSubMenu) {
+//					theCamera.transform.position = MainMenuCamPos.transform.position;
+//					currentMenu = (int)CurrentMenu.mainMenu;
+//					sfxMovingThroughMainMenuAudioSource.PlayOneRandomly();
+//				} else {
+//					withinEquipmentSubMenu = false;
+//					sfxMovingThroughMainMenuAudioSource.PlayOneRandomly();
+//				}
+//			}
+//
+//			if (currentEquipmentSubMenuSelection == 0) {
+//				ArrowEquipSaveSprite.enabled = true;
+//			} else {
+//				ArrowEquipSaveSprite.enabled = false;
+//			}
+//
+//			if (!withinEquipmentSubMenu) {
+//				if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow) || Input.GetButtonDown ("Vita_DpadUp") || MenuAnalogUp) {
+//					if (currentEquipmentSubMenuSelection >= 1) {
+//						currentEquipmentSubMenuSelection--;
+//						sfxMovingThroughMainMenuAudioSource.PlayOneRandomly();
+//					}
+//				} else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow) || Input.GetButtonDown ("Vita_DpadDown") || MenuAnalogDown) {
+//					if (currentEquipmentSubMenuSelection <= 3) {
+//						currentEquipmentSubMenuSelection++;
+//						sfxMovingThroughMainMenuAudioSource.PlayOneRandomly();
+//					}
+//				}
+//			}
+//
+//			//Actually selecting something within equipment screen
+//			switch (currentlyDeployedOS) {
+//			case ((int)OSType.windows):
+//			case ((int)OSType.mac):
+//			case ((int)OSType.linux):
+//
+//				
+//				if (Input.GetKeyUp(KeyCode.Return)) {
+//					Debug.Log ("pressed");
+//					switch (currentEquipmentSubMenuSelection) {
+//					case ((int)EquipmentSubMenus.returnToMM):
+//						SaveLoad.Save ();
+//						theCamera.transform.position = MainMenuCamPos.transform.position;
+//						currentMenu = (int)CurrentMenu.mainMenu;
+//						break;
+//					case ((int)EquipmentSubMenus.pistol):
+//						if (withinEquipmentSubMenu) {
+//							switch (GunSubMenuListenerComp.selectionCode) {
+//							case (0):
+//								SaveData.currentPistolModEquipped = 0;
+//								withinEquipmentSubMenu = false;
+//								sfxSelectedEquipEquipMenuAudioSource.PlayOneRandomly ();
+//								break;
+//							case (1):
+//								if (SaveData.stunGunUnlocked) {
+//									SaveData.currentPistolModEquipped = 1;
+//									withinEquipmentSubMenu = false;
+//									sfxSelectedEquipEquipMenuAudioSource.PlayOneRandomly ();
+//								} else {
+//									//play sad noise
+//									GunSubMenuListenerComp.SadAnimate();
+//									sfxCantSelectEquipEquipMenuAudioSource.PlayOneRandomly ();
+//								}
+//								break;
+//							case (2):
+//								if (SaveData.burstFireUnlocked) {
+//									SaveData.currentPistolModEquipped = 2;
+//									withinEquipmentSubMenu = false;
+//									sfxSelectedEquipEquipMenuAudioSource.PlayOneRandomly ();
+//								} else {
+//									GunSubMenuListenerComp.SadAnimate();
+//									sfxCantSelectEquipEquipMenuAudioSource.PlayOneRandomly ();
+//								}
+//								break;
+//							default:
+//								break;
+//							}
+//							//Only do this if selection code corresponds to something that's unlocked
+//							//Play a noise
+//
+//						} else {
+//							withinEquipmentSubMenu = true;
+//							sfxSelectingSomethingMainMenuAudioSource.PlayOneRandomly();
+//						}
+//
+//
+//						break;
+//					case ((int)EquipmentSubMenus.seekers):
+//						if (withinEquipmentSubMenu) {
+//							switch (SeekerSubMenuListenerComp.selectionCode) {
+//							case (0):
+//								SaveData.currentSeekerModEquipped = 0;
+//								withinEquipmentSubMenu = false;
+//								sfxSelectedEquipEquipMenuAudioSource.PlayOneRandomly ();
+//								break;
+//							case (1):
+//								if (SaveData.missileSeekerseUnlocked) {
+//									SaveData.currentSeekerModEquipped = 1;
+//									withinEquipmentSubMenu = false;
+//									sfxSelectedEquipEquipMenuAudioSource.PlayOneRandomly ();
+//								} else {
+//									//play sad noise
+//									SeekerSubMenuListenerComp.SadAnimate();
+//									sfxCantSelectEquipEquipMenuAudioSource.PlayOneRandomly ();
+//								}
+//								break;
+//							case (2):
+//								if (SaveData.ringUnlocked) {
+//									SaveData.currentSeekerModEquipped = 2;
+//									withinEquipmentSubMenu = false;
+//									sfxSelectedEquipEquipMenuAudioSource.PlayOneRandomly ();
+//								} else {
+//									//play sad noise
+//									SeekerSubMenuListenerComp.SadAnimate();
+//									sfxCantSelectEquipEquipMenuAudioSource.PlayOneRandomly ();
+//								}
+//								break;
+//							default:
+//								break;
+//							}
+//						} else {
+//							withinEquipmentSubMenu = true;
+//							sfxSelectingSomethingMainMenuAudioSource.PlayOneRandomly();
+//						}
+//						break;
+//					case ((int)EquipmentSubMenus.body):
+//						if (withinEquipmentSubMenu) {
+//							switch (BodySubMenuListenerComp.selectionCode) {
+//							case (0):
+//							case (1):
+//							case (2):
+//								SaveData.currentEquipModEquipped = 0;
+//								withinEquipmentSubMenu = false;
+//								sfxSelectedEquipEquipMenuAudioSource.PlayOneRandomly ();
+//								break;
+//							case (3):
+//								if (SaveData.tankIUnlocked) {
+//									SaveData.currentEquipModEquipped = 3;
+//									withinEquipmentSubMenu = false;
+//									sfxSelectedEquipEquipMenuAudioSource.PlayOneRandomly ();
+//								} else {
+//									//play sad noise
+//									BodySubMenuListenerComp.SadAnimate();
+//									sfxCantSelectEquipEquipMenuAudioSource.PlayOneRandomly ();
+//								}
+//								break;
+//							case (4):
+//								if (SaveData.boltIUnlocked) {
+//									SaveData.currentEquipModEquipped = 4;
+//									withinEquipmentSubMenu = false;
+//									sfxSelectedEquipEquipMenuAudioSource.PlayOneRandomly ();
+//								} else {
+//									//play sad noise
+//									BodySubMenuListenerComp.SadAnimate();
+//									sfxCantSelectEquipEquipMenuAudioSource.PlayOneRandomly ();
+//								}
+//								break;
+//							case (5):
+//								if (SaveData.gunnerIUnlocked) {
+//									SaveData.currentEquipModEquipped = 5;
+//									withinEquipmentSubMenu = false;
+//									sfxSelectedEquipEquipMenuAudioSource.PlayOneRandomly ();
+//								} else {
+//									//play sad noise
+//									BodySubMenuListenerComp.SadAnimate();
+//									sfxCantSelectEquipEquipMenuAudioSource.PlayOneRandomly ();
+//								}
+//								break;
+//							case (6):
+//								if (SaveData.tankIIUnlocked) {
+//									SaveData.currentEquipModEquipped = 6;
+//									withinEquipmentSubMenu = false;
+//									sfxSelectedEquipEquipMenuAudioSource.PlayOneRandomly ();
+//								} else {
+//									//play sad noise
+//									BodySubMenuListenerComp.SadAnimate();
+//									sfxCantSelectEquipEquipMenuAudioSource.PlayOneRandomly ();
+//								}
+//								break;
+//							case (7):
+//								if (SaveData.boltIIUnlocked) {
+//									SaveData.currentEquipModEquipped = 7;
+//									withinEquipmentSubMenu = false;
+//									sfxSelectedEquipEquipMenuAudioSource.PlayOneRandomly ();
+//								} else {
+//									//play sad noise
+//									BodySubMenuListenerComp.SadAnimate();
+//									sfxCantSelectEquipEquipMenuAudioSource.PlayOneRandomly ();
+//								}
+//								break;
+//							case (8):
+//								if (SaveData.gunnerIIUnlocked) {
+//									SaveData.currentEquipModEquipped = 8;
+//									withinEquipmentSubMenu = false;
+//									sfxSelectedEquipEquipMenuAudioSource.PlayOneRandomly ();
+//								} else {
+//									//play sad noise
+//									BodySubMenuListenerComp.SadAnimate();
+//									sfxCantSelectEquipEquipMenuAudioSource.PlayOneRandomly ();
+//								}
+//								break;
+//							default:
+//								break;
+//							}
+//						} else {
+//							withinEquipmentSubMenu = true;
+//							sfxSelectingSomethingMainMenuAudioSource.PlayOneRandomly();
+//						}
+//						break;
+//					case ((int)EquipmentSubMenus.music):
+//						if (withinEquipmentSubMenu) {
+//							switch (MusicSubMenuListenerComp.selectionCode) {
+//							case (0):
+//								SaveData.currentSongSelected = 0;
+//								withinEquipmentSubMenu = false;
+//								sfxSelectingSomethingMainMenuAudioSource.PlayOneRandomly();
+//								break;
+//							case (1):
+//								if (SaveData.song1Unlocked) {
+//									SaveData.currentSongSelected = 1;
+//									withinEquipmentSubMenu = false;
+//									sfxSelectingSomethingMainMenuAudioSource.PlayOneRandomly();
+//								} else {
+//									MusicSubMenuListenerComp.SadAnimate();
+//									sfxCantSelectEquipEquipMenuAudioSource.PlayOneRandomly();
+//								}
+//								break;
+//							case (2):
+//								if (SaveData.song2Unlocked) {
+//									SaveData.currentSongSelected = 2;
+//									withinEquipmentSubMenu = false;
+//									sfxSelectingSomethingMainMenuAudioSource.PlayOneRandomly();
+//								} else {
+//									MusicSubMenuListenerComp.SadAnimate();
+//									sfxCantSelectEquipEquipMenuAudioSource.PlayOneRandomly();
+//								}
+//								break;
+//							case (3):
+//								if (SaveData.song3Unlocked) {
+//									SaveData.currentSongSelected = 3;
+//									withinEquipmentSubMenu = false;
+//									sfxSelectingSomethingMainMenuAudioSource.PlayOneRandomly();
+//								} else {
+//									MusicSubMenuListenerComp.SadAnimate();
+//									sfxCantSelectEquipEquipMenuAudioSource.PlayOneRandomly();
+//								}
+//								break;
+//							default:
+//								SaveData.currentSongSelected = 0;
+//								break;
+//							}
+//
+//						} else {
+//							withinEquipmentSubMenu = true;
+//							sfxSelectingSomethingMainMenuAudioSource.PlayOneRandomly();
+//						}
+//
+//						break;
+//					default:
+//						break;
+//					}
+//				}
+//
+//				
+//				if (Input.GetButtonDown ("360_AButton")) {
+//					Debug.Log ("pressed");
+//					switch (currentEquipmentSubMenuSelection) {
+//					case (0):
+//						break;
+//					case (1):
+//						break;
+//					case (2):
+//
+//						break;
+//					case (3):
+//						break;
+//					case (4):
+//						break;
+//					default:
+//						break;
+//					}
+//				}
+//				//	} 
+//				break;
+//			case ((int)OSType.xone):
+//				break;
+//			case ((int)OSType.ps4):
+//				break;
+//			case ((int)OSType.psvita):
+//				if (Input.GetButtonUp("Vita_XButton")) {
+//					
+//					switch (currentEquipmentSubMenuSelection) {
+//					case (0):
+//						break;
+//					case (1):
+//						break;
+//					case (2):
+//						break;
+//					case (3):
+//						break;
+//					case (4):
+//						break;
+//					default:
+//						break;
+//					}
+//				}
+//				break;
+//			case ((int)OSType.wiiu):
+//				break;
+//			default:
+//				break;
+//			}
+//		
+//		} else if (currentMenu == (int)CurrentMenu.controls) {
+//			if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown (KeyCode.Return)) {
+//				theCamera.transform.position = MainMenuCamPos.transform.position;
+//				currentMenu = (int)CurrentMenu.mainMenu;
+//			}
+//		} else if (currentMenu == (int)CurrentMenu.options) {
+//			/*
+//			switch (currentlyDeployedOS) {
+//			case ((int)OSType.windows):
+//			case ((int)OSType.mac):
+//			case ((int)OSType.linux):
+//
+//				break;
+//			case ((int)OSType.xone):
+//				break;
+//			case ((int)OSType.ps4):
+//				break;
+//			case ((int)OSType.psvita):
+//				break;
+//			case ((int)OSType.wiiu):
+//				break;
+//			default:
+//				break;
+//			} */
+//			
+//
+//
+//
+//			///////////////////////////
+//			if (Input.GetKeyDown(KeyCode.Escape) || Input.GetButtonDown ("Vita_OButton") || Input.GetButtonDown ("360_BButton")) {
+//				theCamera.transform.position = MainMenuCamPos.transform.position;
+//				currentMenu = (int)CurrentMenu.mainMenu;
+//			}
+//			//Movementthrough Options
+//			if (!alteringOptionsMode) {
+//				if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow) || Input.GetButtonDown ("Vita_DpadUp") || MenuAnalogUp) {
+//					if (currentOptionsSelection >= 1) {
+//						currentOptionsSelection--;
+//						sfxMovingThroughMainMenuAudioSource.PlayOneRandomly();
+//					}
+//				} else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow) || Input.GetButtonDown ("Vita_DpadDown") || MenuAnalogDown) {
+//					if (currentOptionsSelection <= 2) {
+//						currentOptionsSelection++;
+//						sfxMovingThroughMainMenuAudioSource.PlayOneRandomly();
+//					}
+//				}
+//			} else {
+//				switch(currentOptionsSelection) {
+//				case (0):
+//					if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetButtonDown ("Vita_DpadLeft") || MenuAnalogLeft) {
+//						if (storedMusicVol >= 1) {
+//							storedMusicVol--;
+//							sfxMovingThroughMainMenuAudioSource.PlayOneRandomly();
+//						}
+//					} else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow) || Input.GetButtonDown ("Vita_DpadRight") || MenuAnalogRight) {
+//						if (storedMusicVol <= 9) {
+//							storedMusicVol++;
+//							sfxMovingThroughMainMenuAudioSource.PlayOneRandomly();
+//						}
+//					}
+//					SaveData.musicVolume = storedMusicVol;
+//					break;
+//				case (1):
+//					if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetButtonDown ("Vita_DpadLeft") || MenuAnalogLeft) {
+//						if (storedSfxVol >= 1) {
+//							storedSfxVol--;
+//							sfxMovingThroughMainMenuAudioSource.PlayOneRandomly();
+//						}
+//					} else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow) || Input.GetButtonDown ("Vita_DpadRight") || MenuAnalogRight) {
+//						if (storedSfxVol <= 9) {
+//							storedSfxVol++;
+//							sfxMovingThroughMainMenuAudioSource.PlayOneRandomly();
+//						}
+//					}
+//					SaveData.sfxVolume = storedSfxVol;
+//					break;
+//				case (2):
+//					//Have to do something about the controllers here
+//
+//
+//
+//					if (storedController ==1 && (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetButtonDown ("Vita_DpadLeft") || MenuAnalogLeft)) {
+//						storedController = 0;
+//					} else if (storedController == 0 && (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow) || Input.GetButtonDown ("Vita_DpadRight") || MenuAnalogRight)) {
+//						storedController = 1;
+//					}
+//
+//					if (storedController == 0) {
+//						OptionsControllerKnMLoc.transform.localScale = new Vector2(1.2f,1.2f);
+//						OptionsControllerKnMLoc.GetComponent<SpriteRenderer>().renderer.material.color = new Color (1,1,1,1);
+//						OptionsControllerJoypadLoc.transform.localScale = new Vector2 (0.8f,0.8f);
+//						OptionsControllerJoypadLoc.GetComponent<SpriteRenderer>().renderer.material.color = new Color (1,1,1,0.5f);
+//					} else if (storedController == 1) {
+//						OptionsControllerKnMLoc.transform.localScale = new Vector2(0.8f,0.8f);
+//						OptionsControllerKnMLoc.GetComponent<SpriteRenderer>().renderer.material.color = new Color (1,1,1,0.5f);
+//						OptionsControllerJoypadLoc.transform.localScale = new Vector2 (1.2f,1.2f);
+//						OptionsControllerJoypadLoc.GetComponent<SpriteRenderer>().renderer.material.color = new Color (1,1,1,1);
+//					}
+//
+//					SaveData.controllerType = storedController;
+//					break;
+//				default:
+//					break;
+//				}
+//				
+//				currentSelectionArrowMusicVol.transform.position = new Vector3(beginMusicPos.transform.position.x + (storedMusicVol/10f)*totalMusicPosDist, 
+//				                                                            OptionsArrowLocMusicVolLoc.transform.position.y, OptionsArrowLocMusicVolLoc.transform.position.z);
+//				currentSelectionArrowSfxVol.transform.position = new Vector3(beginSfxPos.transform.position.x + (storedSfxVol/10f)*totalSfxPosDist, 
+//				                                                          OptionsArrowLocSfxVolLoc.transform.position.y, OptionsArrowLocSfxVolLoc.transform.position.z);
+//
+//			}
+//
+//
+//
+//			//What to do when you hit enter on an option
+//			if ((Input.GetKeyUp(KeyCode.Return) || Input.GetButtonUp("Vita_XButton") || Input.GetButtonUp ("360_AButton")) && !alteringOptionsMode) {
+//				switch (currentOptionsSelection) {
+//				case (0):
+//					alteringOptionsMode = true;
+//					break;
+//				case (1):
+//					alteringOptionsMode = true;
+//					break;
+//				case (2):
+//					//Change from keyboard to joypad
+//					//Change in size to indicate which one you've selected
+//					alteringOptionsMode = true;
+//					break;
+//				case (3):
+//					SaveLoad.Save ();
+//					//Debug.Log ("controller type is " + SaveData.controllerType);
+//					theCamera.transform.position = MainMenuCamPos.transform.position;
+//					currentMenu = (int)CurrentMenu.mainMenu;
+//					break;
+//				default:
+//					break;
+//				}
+//			} else if ((Input.GetKeyUp(KeyCode.Return) || Input.GetButtonUp("Vita_XButton") || Input.GetButtonUp ("360_AButton")) && alteringOptionsMode) {
+//				alteringOptionsMode = false;
+//			
+//			}
+//
+//			//Moving the Arrow through the Options themselves
+//			switch (currentOptionsSelection) {
+//			case (0):
+//				transform.position = OptionsArrowLocMusicVolLoc.transform.position;
+//				break;
+//			case (1):
+//				transform.position = OptionsArrowLocSfxVolLoc.transform.position;
+//				break;
+//			case (2):
+//				//Depending on what controller is currently selected, 
+//				transform.position = OptionsControllerSelect.transform.position;
+//				break;
+//			case (3):
+//				transform.position = SaveOptionsReturnMMLoc.transform.position;
+//				break;
+//			default:
+//				break;
+//				
+//			}
+//
+//
+//		}
+//
+//	}
+//
+//	void AnalogInputForMenus() {
+//		/* 	
+//		 * 	public Vector2 leftStickInput;
+//	public bool leftstick_y_axis_reset = true;
+//	public float joystick_deadzone = 0.35f;
+//	public bool MenuAnalogLeft = false;
+//	public bool MenuAnalogRight = false;
+//	public bool MenuAnalogUp = false;
+//	public bool MenuAnalogDown = false;
+//
+//	public int lastAnalogMovement = 0;
+//	public enum AnalogMovement {left, right, up, down};
+//	public bool analogFrameCounting = false;
+//	public int currentAnalogFrameCounter = 0;
+//	public int analogFrameTimerLimit = 15; 
+//	*/
+//		bool rawLeft = false;
+//		bool rawRight = false;
+//		bool rawUp = false;
+//		bool rawDown = false;
+//
+//		if (SaveData.controllerType == (int)controllerType.joypadController) {
+//			switch (SaveData.deployedOS) {
+//			case ((int)OSType.windows): //PC
+//			case ((int)OSType.mac): //Mac
+//			case ((int)OSType.linux): //Linux
+//				leftStickInput = new Vector2(Input.GetAxis ("360_LeftStickLeftRight") , Input.GetAxis ("360_LeftStickUpDown"));
+//
+//				if (leftStickInput.magnitude < joystick_deadzone) {
+//					leftStickInput = Vector2.zero;
+//				}
+//
+//				if ((Input.GetAxis("360_DPadLeftRight") > 0.25f) || leftStickInput.x > 0.25f) {
+//					rawRight = true;
+//					rawLeft = false;
+//				} else if ((Input.GetAxis("360_DPadLeftRight") < -0.25f) || leftStickInput.x < -0.25f) {
+//					rawLeft = true;
+//					rawRight = false;
+//				} else/* if ((Input.GetKey("right")  || Input.GetKey ("d")) && (Input.GetKey("left") || Input.GetKey ("a"))) */{
+//					rawRight = false;
+//					rawLeft = false;
+//				}
+//
+//				if ((Input.GetAxis("360_DPadUpDown") > 0.1f)  || (leftStickInput.y > 0.5f)  ) {
+//					rawUp = true;
+//					rawDown = false;
+//				} else if ((Input.GetAxis("360_DPadUpDown") < -0.1f) || (leftStickInput.y < -0.5f)) {
+//					rawDown = true;
+//					rawUp = false;
+//				} else {
+//					rawUp = false;
+//					rawDown = false;
+//				}
+//
+//				if (leftStickInput.magnitude < 0.35f && (Mathf.Abs (Input.GetAxis("360_DPadUpDown")) < 0.3f)) {
+//					MenuAnalogLeft = false;
+//					MenuAnalogRight = false;
+//					MenuAnalogUp = false;
+//					MenuAnalogDown = false;
+//
+//					analogFrameCounting = false;
+//					currentAnalogFrameCounter = 0;
+//				}
+//
+//				break;
+//			case ((int)OSType.psvita): //PSVita
+//				leftStickInput = new Vector2(Input.GetAxis ("Vita_LeftStickHorizontal") , -1*Input.GetAxis ("Vita_LeftStickVertical"));
+//				
+//				if (leftStickInput.magnitude < joystick_deadzone) {
+//					leftStickInput = Vector2.zero;
+//				}
+//				
+//				if (Input.GetButton ("Vita_DpadRight") || leftStickInput.x > 0.25f) {
+//					rawRight = true;
+//					rawLeft = false;
+//				} else if (Input.GetButton ("Vita_DpadLeft") || leftStickInput.x < -0.25f) {
+//					rawLeft = true;
+//					rawRight = false;
+//				} else/* if ((Input.GetKey("right")  || Input.GetKey ("d")) && (Input.GetKey("left") || Input.GetKey ("a"))) */{
+//					rawRight = false;
+//					rawLeft = false;
+//				}
+//				
+//				if (Input.GetButton ("Vita_DpadUp")  || (leftStickInput.y > 0.6f)  ) {
+//					rawUp = true;
+//					rawDown = false;
+//				} else if (Input.GetButton("Vita_DpadDown") || (leftStickInput.y < -0.6f)) {
+//					rawDown = true;
+//					rawUp = false;
+//				} else {
+//					rawUp = false;
+//					rawDown = false;
+//				}
+//
+//				if (leftStickInput.magnitude < 0.4f) {
+//					MenuAnalogLeft = false;
+//					MenuAnalogRight = false;
+//					MenuAnalogUp = false;
+//					MenuAnalogDown = false;
+//					
+//					analogFrameCounting = false;
+//					currentAnalogFrameCounter = 0;
+//				}
+//
+//				break;
+//			default:
+//				break;
+//			}
+//
+//			if (!analogFrameCounting) {
+//				if (rawLeft || rawRight) {
+//					if (rawLeft) {
+//						MenuAnalogLeft = true;
+//						MenuAnalogRight = false;
+//					} else {
+//						MenuAnalogRight = true;
+//						MenuAnalogLeft = false;
+//					}
+//					analogFrameCounting = true;
+//				}
+//
+//				if (rawUp || rawDown) {
+//					if (rawUp) {
+//						MenuAnalogUp = true;
+//						MenuAnalogDown = false;
+//					} else {
+//						MenuAnalogDown = true;
+//						MenuAnalogUp = false;
+//					}
+//					analogFrameCounting = true;
+//				}
+//
+//				currentAnalogFrameCounter = analogFrameTimerLimit;
+//			} else {
+//				MenuAnalogLeft = false;
+//				MenuAnalogRight = false;
+//				MenuAnalogDown = false;
+//				MenuAnalogUp = false;
+//
+//				if (currentAnalogFrameCounter > 0) {
+//					currentAnalogFrameCounter--;
+//				} else {
+//					currentAnalogFrameCounter = analogFrameTimerLimit;
+//					analogFrameCounting = false;
+//				}
+//
+//			}
+//
+//
+//		}
+//	}
+
+
+
+
+	//REINTEGRATION
+	#region
+	//
+	//	public int currentSelection = 0;
+	//	public int currentEquipmentSubMenuSelection = 0;
+	//	public bool withinEquipmentSubMenu = false;
+	//	public enum EquipmentSubMenus {returnToMM, pistol, seekers, body, music};
+	//	public int currentOptionsSelection = 0;
+	//	public int currentlyDeployedOS = 0;
+	//	public int storedMusicVol = 10;
+	//	public int storedSfxVol = 10;
+	//	public int storedController = 0;
+	//	public int currentMenu = 0;
+	//	public GameObject ArrowPosition0;
+	//	public GameObject ArrowPosition1;
+	//	public GameObject ArrowPosition2;
+	//	public GameObject ArrowPosition3;
+	//	public GameObject ArrowPosition4;
+	//	public GameObject ArrowEquipSave;
+	//	private SpriteRenderer ArrowEquipSaveSprite;
+	//	public GameObject GunModListener;
+	//	private SelectedSubMenuListener GunSubMenuListenerComp;
+	//	public GameObject SeekerModListener;
+	//	private SelectedSubMenuListener SeekerSubMenuListenerComp;
+	//	public GameObject BodyModListener;
+	//	private SelectedSubMenuListener BodySubMenuListenerComp;
+	//	public GameObject MusicSelectionListener;
+	//	private SelectedSubMenuListener MusicSubMenuListenerComp;
+	//
+	//	public GameObject OptionsArrowLocMusicVolLoc;
+	//	public GameObject OptionsArrowLocSfxVolLoc;
+	//	public GameObject OptionsControllerSelect;
+	//	public GameObject OptionsControllerSelectString;
+	//	public GameObject OptionsControllerKnMLoc;
+	//	public GameObject OptionsControllerJoypadLoc;
+	//	public GameObject SaveOptionsReturnMMLoc;
+	//	public GameObject currentSelectionArrowMusicVol;
+	//	public GameObject currentSelectionArrowSfxVol;
+	//	public GameObject MainMenuCamPos;
+	//	public GameObject ControlsMenuCamPos;
+	//	public GameObject OptionsMenuCamPos;
+	//	public GameObject EquipmentMenuCamPos;
+	//	public GameObject beginMusicPos;
+	//	public GameObject endMusicPos;
+	//	public float totalMusicPosDist;
+	//	public GameObject beginSfxPos;
+	//	public GameObject endSfxPos;
+	//	public float totalSfxPosDist;
+	//	public bool alteringOptionsMode = false;
+	//	//Launch Game is 0
+	//	//Tutorial is 1
+	//	//Quit is 2
+	//	public enum ArrowSelection {launchGame, controls, quit};
+	//	public enum CurrentMenu {mainMenu, equipment, controls, options};
+	//	public enum controllerType {mouseAndKeyboard, joypadController};
+	//	public enum OSType {windows, mac, linux, xone, ps4, psvita, wiiu};
+	//
+	//	//Analog stick menu movement
+	//	public Vector2 leftStickInput;
+	//	public bool leftstick_y_axis_reset = true;
+	//	public float joystick_deadzone = 0.35f;
+	//
+	//	public bool MenuAnalogLeft = false;
+	//	public bool MenuAnalogRight = false;
+	//	public bool MenuAnalogUp = false;
+	//	public bool MenuAnalogDown = false;
+	//
+	//	public int lastAnalogMovement = 0;
+	//	public enum AnalogMovement {left, right, up, down};
+	//	public bool analogFrameCounting = false;
+	//	public int currentAnalogFrameCounter = 0;
+	//	public int analogFrameTimerLimit = 5; 
+	//
+	//
+	//
+	//
+	#endregion
+
+}
