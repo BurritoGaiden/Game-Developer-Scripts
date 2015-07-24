@@ -1,0 +1,25 @@
+using UnityEngine;
+using System.Collections;
+
+public class ObjectBuilderScript : MonoBehaviour {
+
+	public GameObject obj;
+	public Vector3 spawnPoint;
+
+	public void BuildObject(){
+//		Instantiate (obj, spawnPoint, Quaternion.identity);
+		GameObject instance = Instantiate(Resources.Load("box", typeof(GameObject)), spawnPoint, Quaternion.identity) as GameObject;
+	}
+
+	public void SheetNew(){
+		GameObject go = GameObject.CreatePrimitive(PrimitiveType.Plane);
+		Renderer rend = go.GetComponent<Renderer>();
+		rend.material.mainTexture = Resources.Load("glass") as Texture;
+	}
+
+	public void NewNote(){
+		GameObject instance = Instantiate(Resources.Load("adobe", typeof(GameObject)), spawnPoint, Quaternion.identity) as GameObject;
+	}
+
+
+}
